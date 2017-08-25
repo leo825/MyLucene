@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="MyLucene:war exploded">
+    <output-path>$PROJECT_DIR$/target/com.leo.mylucene</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="MyLucene" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-core:3.6.1" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-highlighter:3.6.1" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-memory:3.6.1" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queries:3.6.1" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queryparser:3.6.1" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="E:\WorkSpace\Git\MyLucene\target/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="MyLucene/web/Web" />
+    </root>
+  </artifact>
+</component>
