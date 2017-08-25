@@ -33,9 +33,10 @@
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-highlighter:3.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-memory:3.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queries:3.6.1" level="project" />
+    <orderEntry type="library" name="Maven: jakarta-regexp:jakarta-regexp:1.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queryparser:3.6.1" level="project" />
     <orderEntry type="module-library">
-      <library>
+      <library name="Maven: org.wltea.analyzer:IKAnalyzer:5.0">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/IKAnalyzer2012.jar!/" />
         </CLASSES>
