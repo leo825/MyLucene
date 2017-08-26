@@ -144,7 +144,7 @@ public class MyIkAnalyzerTest {
     }
 
     public static void main(String[] agrs) throws IOException {
-        //testIk();
-        testIk2();
+        testIk();
+        //testIk2();
     }
 }

@@ -52,6 +52,12 @@
             <systemPath>${basedir}/lib/IKAnalyzer2012.jar</systemPath>
         </dependency>
 
+        <!-- oracle数据库连接的驱动 -->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc14</artifactId>
+            <version>10.2.0.4.0</version>
+        </dependency>
         <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common &ndash;&gt;-->
         <!--<dependency>-->
             <!--<groupId>org.apache.lucene</groupId>-->

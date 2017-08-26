@@ -1,20 +1,23 @@
 package com.leo;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by LX on 2017/8/24.
@@ -142,4 +145,67 @@ public class testLucene {
         System.out.println("*****************检索结束**********************");
     }
 
+    @Test
+    public void testLucene3(){
+        long startTime = System.currentTimeMillis();
+        System.out.println("*****************检索开始**********************");
+
+        RAMDirectory directory = new RAMDirectory();
+    }
+
+
+    @Test
+    public void testCreateIndex() {
+        String Dest_Index_Path = "D:\\Library\\lucence\\index0";//索引存放路径
+        String[] keywords = {"001", "002", "003", "004", "005"};//索引的数据关键字数组
+        String[] textDetail = {"test1", "test2", "test3", "test4", "test5"};//索引的记录内容数组
+
+        try {
+            Date date = new Date();
+            long startTime = date.getTime();
+
+            Analyzer analyzer = new SimpleAnalyzer();//文本分析器
+            Directory directory = FSDirectory.open(new File(Dest_Index_Path));
+            IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_CURRENT, analyzer);
+            IndexWriter indexWriter = new IndexWriter(directory, conf);
+            //循环读取数组记录，生成文档添加到索引中
+            for (int i = 0; i < 5; i++) {
+                Document document = new Document();//生成文档对象
+                Field fieldId = new Field("id", keywords[i], Field.Store.YES, Field.Index.NOT_ANALYZED);//生成关键字域
+                document.add(fieldId);
+                Field fieldContent = new Field("content", textDetail[i], Field.Store.YES, Field.Index.NOT_ANALYZED);//生成文本内容域
+                document.add(fieldContent);
+
+                indexWriter.addDocument(document);//将文档对象添加到索引中
+            }
+            indexWriter.forceMerge(2);//执行优化的方法，参数表示优化称几段索引
+            indexWriter.close();
+
+            Date endDate = new Date();
+            long endTime = endDate.getTime();
+            long indexTime = endTime - startTime;
+            System.out.println("Total Time : " + indexTime + "(ms)");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Create Index Success");
+    }
+
+    @Test
+    public void testQueryIndex() throws IOException {
+        String Dest_Index_Path = "D:\\Library\\lucence\\index0";
+        Directory directory = FSDirectory.open(new File(Dest_Index_Path));
+        IndexSearcher searcher = new IndexSearcher(directory);
+        Term term = new Term("id", "002");
+        TermQuery query = new TermQuery(term);
+        TopDocs results = searcher.search(query, 5);
+        System.out.println(results.totalHits);
+        ScoreDoc[] docs = results.scoreDocs;
+        for (ScoreDoc doctmp : docs) {
+            //Document firstHit = searcher.doc(rs.scoreDocs[i].doc);
+            Document firstHit = searcher.doc(doctmp.doc);
+            System.out.println("id:" + firstHit.getField("id").stringValue());
+            System.out.println("content:" + firstHit.getField("content").stringValue());
+        }
+    }
 }
