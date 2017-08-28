@@ -7,15 +7,16 @@
           <element id="module-output" name="MyLucene" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-core:3.6.1" />
-          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-highlighter:3.6.1" />
-          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-memory:3.6.1" />
-          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queries:3.6.1" />
-          <element id="library" level="project" name="Maven: jakarta-regexp:jakarta-regexp:1.4" />
-          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queryparser:3.6.1" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-core:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-highlighter:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-analyzers-common:6.1.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-join:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-memory:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queries:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queryparser:6.6.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-sandbox:6.6.0" />
           <element id="library" level="project" name="Maven: com.oracle:ojdbc14:10.2.0.4.0" />
           <element id="library" level="project" name="Maven: com.google.guava:guava:19.0" />
-          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-analyzers-common:6.1.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial:6.1.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial-extras:6.1.0" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-misc:6.1.0" />
