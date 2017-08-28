@@ -25,5 +25,8 @@
         <module name="MyLucene" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="MyLucene" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>

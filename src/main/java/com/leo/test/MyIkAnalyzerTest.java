@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.StringReader;
 /**
  * Created by LX on 2017/8/24.
+ *
+ * 在lucene3.6.1中正常运行
  */
 public class MyIkAnalyzerTest {
 

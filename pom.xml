@@ -5,12 +5,18 @@
     <artifactId>com.leo.mylucene</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>com.leo.mylucene Maven Webapp</name>
+    <name>com.leo.mylucene</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--<lucene.version>6.1.0</lucene.version>-->
         <lucene.version>3.6.1</lucene.version>
+        <!--<lucene.version>5.5.0</lucene.version>-->
+        <lucene-spatial.version>6.1.0</lucene-spatial.version>
+        <spatial4j.version>0.6</spatial4j.version>
+        <guava.version>19.0</guava.version>
+        <log4j.version>1.2.14</log4j.version>
 
     </properties>
 
@@ -36,8 +42,7 @@
             <artifactId>lucene-highlighter</artifactId>
             <version>${lucene.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.apache.lucene/lucene-queryparser &ndash;&gt;-->
+
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-queryparser</artifactId>
@@ -58,24 +63,51 @@
             <artifactId>ojdbc14</artifactId>
             <version>10.2.0.4.0</version>
         </dependency>
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.lucene</groupId>-->
-            <!--<artifactId>lucene-analyzers-common</artifactId>-->
-            <!--<version>${lucene.version}</version>-->
-        <!--</dependency>-->
 
-        <!--<dependency>-->
-            <!--<groupId>org.apache.lucene</groupId>-->
-            <!--<artifactId>lucene-backward-codecs</artifactId>-->
-            <!--<version>6.5.0</version>-->
-        <!--</dependency>-->
 
-        <!--<dependency>-->
-            <!--<groupId>com.lucene</groupId>-->
-            <!--<artifactId>ikAnalyzer</artifactId>-->
-            <!--<version>5.0</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <!-- Lucene分词 -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>${lucene-spatial.version}</version>
+        </dependency>
+
+        <!-- 地理坐标支持 -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-spatial</artifactId>
+            <version>${lucene-spatial.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-spatial-extras</artifactId>
+            <version>${lucene-spatial.version}</version>
+        </dependency>
+
+
+        <!--
+            Spatial4j是一个通用的空间/地理空间ASL许可的开源Java库,它的核心能力有3个方面:
+            1 : 提供公共图形,可工作在Euclidean和geodesic(球体的表面)的世界模型
+            2 : 提供距离计算和其它数学计算
+            3 : 从WKT 格式化字符串来读取形状
+        -->
+        <dependency>
+            <groupId>org.locationtech.spatial4j</groupId>
+            <artifactId>spatial4j</artifactId>
+            <version>${spatial4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
 
     </dependencies>
     <build>

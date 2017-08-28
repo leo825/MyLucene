@@ -14,6 +14,14 @@
           <element id="library" level="project" name="Maven: jakarta-regexp:jakarta-regexp:1.4" />
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-queryparser:3.6.1" />
           <element id="library" level="project" name="Maven: com.oracle:ojdbc14:10.2.0.4.0" />
+          <element id="library" level="project" name="Maven: com.google.guava:guava:19.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-analyzers-common:6.1.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial:6.1.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial-extras:6.1.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-misc:6.1.0" />
+          <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial3d:6.1.0" />
+          <element id="library" level="project" name="Maven: org.locationtech.spatial4j:spatial4j:0.6" />
+          <element id="library" level="project" name="Maven: log4j:log4j:1.2.14" />
         </element>
       </element>
       <element id="directory" name="META-INF">
