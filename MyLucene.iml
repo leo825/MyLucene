@@ -38,9 +38,9 @@
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queryparser:6.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-sandbox:6.6.0" level="project" />
     <orderEntry type="module-library">
-      <library name="Maven: org.wltea.analyzer:IKAnalyzer:5.0">
+      <library name="Maven: org.wltea.analyzer:IKAnalyzer:6.5.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/IKAnalyzer2012.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/IKAnalyzer6.5.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

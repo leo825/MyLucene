@@ -52,12 +52,21 @@
             <version>${lucene.version}</version>
         </dependency>
 
+        <!-- IKAnalyzer 分词器，支持lucene3.6.1-->
+        <!--<dependency>-->
+            <!--<groupId>org.wltea.analyzer</groupId>-->
+            <!--<artifactId>IKAnalyzer</artifactId>-->
+            <!--<version>5.0</version>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${basedir}/lib/IKAnalyzer2012.jar</systemPath>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>org.wltea.analyzer</groupId>
             <artifactId>IKAnalyzer</artifactId>
-            <version>5.0</version>
+            <version>6.5.0</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/IKAnalyzer2012.jar</systemPath>
+            <systemPath>${basedir}/lib/IKAnalyzer6.5.0.jar</systemPath>
         </dependency>
 
         <!-- oracle数据库连接的驱动 -->
