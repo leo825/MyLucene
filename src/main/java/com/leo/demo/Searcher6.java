@@ -1,20 +1,18 @@
 package com.leo.demo;
 
-import com.leo.util.LuceneUtil;
-import com.leo.util.PinyinUtils;
-import org.apache.lucene.analysis.Analyzer;
+import com.leo.util.LuceneUtils;
+import com.leo.util.PinyinJPUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.util.Version;
 
 import java.io.IOException;
 import java.util.*;
@@ -44,16 +42,15 @@ public class Searcher6 {
         if (keywords != null && !"".equals(keywords)) {
             DirectoryReader reader = null;
             IndexSearcher indexSearcher = null;
-            Analyzer analyzer = LuceneUtil.getAnalyzer();
 
             /* 创建一个搜索，搜索刚才创建的目录下的索引 */
             try {
                 // 1、第一步，创建搜索目录的reader
-                reader = DirectoryReader.open(LuceneUtil.getDirectory());
+                reader = DirectoryReader.open(LuceneUtils.fsDirectory);
                 // 2、第二步，创建搜索器
                 indexSearcher = new IndexSearcher(reader);
                 // 3、第三步，类似SQL，进行关键字查询
-                QueryParser parser = new MultiFieldQueryParser(feilds, analyzer);
+                QueryParser parser = new MultiFieldQueryParser(feilds, LuceneUtils.analyzer);
 
                 /*
                  * 下面这个表示要同时搜索这两个域，而且只要一个域里面有满足我们搜索的内容就行
@@ -81,11 +78,11 @@ public class Searcher6 {
 //                builder.add(termQuery, BooleanClause.Occur.SHOULD);//SHOULD表示或的意思
 //                builder.add(wildqQuery, BooleanClause.Occur.SHOULD);//SHOULD表示或的意思
 //                builder.add(prefixQuery, BooleanClause.Occur.SHOULD);//SHOULD表示或的意思
-
-//                TopDocs topDocs = indexSearcher.search( builder.build(),  topNum);
+//
+//                TopDocs topDocs = indexSearcher.search( builder.build(),  5);
 
                 /** 使用QueryParser查询分析器构造Query对象,使用这种方式的优势是很准确匹配到所需关键字**/
-                QueryParser qp = new QueryParser(feild, analyzer);
+                QueryParser qp = new QueryParser(feild, LuceneUtils.analyzer);
                 qp.setDefaultOperator(QueryParser.AND_OPERATOR);
                 Query query = qp.parse(keywords);
                 TopDocs topDocs = indexSearcher.search(query, 10000);
@@ -125,18 +122,19 @@ public class Searcher6 {
 
         List<Document> docList = new ArrayList<Document>();
         // 得到初始化索引文件目录
-        Directory directory = LuceneUtil.getDirectory();
+        Directory directory = LuceneUtils.fsDirectory;
         if (directory != null) {
             if (list != null && list.size() > 0) {
                 for(IndexObject e : list){
                     Document doc = new Document();
-                    doc.add(new Field("id", e.getId(), TextField.TYPE_STORED));
+                    doc.add(new Field("id", e.getId(), StringField.TYPE_STORED));
                     doc.add(new Field("name", e.getName(), TextField.TYPE_STORED));
-                    doc.add(new Field("content", e.getContent(), TextField.TYPE_STORED));
+                    doc.add(new Field("name1", PinyinJPUtils.changeToTonePinYin(e.getName()).replaceAll(" ", ""), TextField.TYPE_STORED));
+                    doc.add(new Field("content", e.getContent(), StringField.TYPE_STORED));
                     docList.add(doc);
                 }
-                if(docList != null && !docList.isEmpty()){
-                    LuceneUtil.createIndex(docList);
+                if(docList != null && docList.size() > 0){
+                    LuceneUtils.createIndex(docList);
                 }
             }
         } else { // 索引存放路径不存在
@@ -155,7 +153,7 @@ public class Searcher6 {
         List<IndexObject> indexObjects = null;
 
         // 得到初始化索引文件目录
-        Directory directory = LuceneUtil.getDirectory();
+        Directory directory = LuceneUtils.fsDirectory;
         indexObjects = Searcher6.searchIndex(feild, keywords, pageIndex,pageSize);
         long end = new Date().getTime();
         System.out.println(" searchBykeyWord 《" + keywords + "》  共花费：" + (end - start) + " milliseconds");
@@ -171,31 +169,48 @@ public class Searcher6 {
     /**
      * 对单个Entity对象（自定义对应数据库数据对象）进行索引
      *
-     * @param writer
      * @param e  自定义javaBean对象，
      * @throws IOException
      */
-    public static void indexEntity(IndexWriter writer, IndexObject e) throws IOException {
+    public static void indexEntity(IndexObject e) throws IOException {
         if (e == null) {
             return;
         }
         Document doc = new Document();
-        doc.add(new Field("id", e.getId(), TextField.TYPE_STORED));
+        doc.add(new Field("id", e.getId(), StringField.TYPE_STORED));
         doc.add(new Field("name", e.getName(), TextField.TYPE_STORED));
-        doc.add(new Field("content", e.getContent(), TextField.TYPE_STORED));
-        LuceneUtil.createIndex(doc);
+        doc.add(new Field("content", e.getContent(), StringField.TYPE_STORED));
+        LuceneUtils.createIndex(doc);
     }
 
 
+    /**
+     * 判断字符串是否全为汉字,如果是true则全为汉字，否则加载英文
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isChinese(String str){
+        String reg = "[\\u4e00-\\u9fa5]+";
+        return str.matches(reg);
+    }
+
 
     public static void main(String[] args) throws Exception {
-        //initLuceneIndex();
+//        LuceneUtils.deleteAllIndex();
+
+//        initLuceneIndex();
         String feild = "name";
-        String keywords = "";
-        int pageIndex = 0;//第一页
+        String feild1 = "name1";
+        String keywords = "伏";
+        int pageIndex = 1;//第一页
         int pageSize=10;//每页10个
 
-        searchBykeyWord(feild,keywords,pageIndex,pageSize);// 调用searchIndex方法进行查询
-        searchBykeyWord(feild,PinyinUtils.getPingYin(keywords),pageIndex,pageSize);// 调用searchIndex方法进行查询
+
+        if(isChinese(keywords)){
+            searchBykeyWord(feild,keywords,pageIndex,pageSize);// 调用searchIndex方法进行查询
+        }else{
+            searchBykeyWord(feild1,keywords,pageIndex,pageSize);// 调用searchIndex拼音方法进行查询
+        }
     }
 }

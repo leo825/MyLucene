@@ -23,7 +23,7 @@
           <element id="library" level="project" name="Maven: org.apache.lucene:lucene-spatial3d:6.1.0" />
           <element id="library" level="project" name="Maven: org.locationtech.spatial4j:spatial4j:0.6" />
           <element id="library" level="project" name="Maven: log4j:log4j:1.2.14" />
-          <element id="library" level="project" name="Maven: com.belerweb:pinyin4j:2.5.0" />
+          <element id="library" level="project" name="Maven: com.github.stuxuhai:jpinyin:1.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">

@@ -2,7 +2,6 @@ package com.leo.util;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
@@ -24,23 +23,29 @@ import java.util.List;
  * lucene工具类，采用IKAnalyzer中文分词器
  *
  */
-public class LuceneUtil {
+public class LuceneUtils {
+    private static final Logger log=Logger.getLogger(LuceneUtils.class);
     /** 索引库路径 */
-    private static final String indexPath ="D:\\Library\\lucence\\index1";;
+    private static final String indexPath ="D:\\Library\\lucence\\index1";
+
+    /** 初始化indexWriter **/
     public static IndexWriter indexWriter = null;
-    private static final Logger log=Logger.getLogger(LuceneUtil.class);
-    private static final Directory fsDirectory = null;
+
+    /** 初始化fsDirectory **/
+    public static Directory fsDirectory = null;
 
     /** 初始化分词器 **/
-    private static final Analyzer analyzer = new StandardAnalyzer();
+    public static Analyzer analyzer = null;
 
-
+    /** 初始化赋值 **/
     static {
         //索引库路径不存在则新建一个
         File indexFile=new File(indexPath);
         if(!indexFile.exists()) indexFile.mkdir();
         try {
-            Directory fsDirectory = FSDirectory.open(FileSystems.getDefault().getPath(indexPath));
+            fsDirectory = FSDirectory.open(FileSystems.getDefault().getPath(indexPath));
+            analyzer = new StandardAnalyzer();
+            indexWriter =new IndexWriter(fsDirectory, new IndexWriterConfig(analyzer));
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -49,7 +54,7 @@ public class LuceneUtil {
     /** 获取directory对象 **/
     public static Directory getDirectory() throws IOException {
         if (fsDirectory == null) {
-            return FSDirectory.open(FileSystems.getDefault().getPath(indexPath));
+            fsDirectory = FSDirectory.open(FileSystems.getDefault().getPath(indexPath));
         }
         return fsDirectory;
     }
@@ -77,11 +82,12 @@ public class LuceneUtil {
      * 获取分词器,以后可以扩展成其他分词器。例如：ikAnalyzer或者paoding
      * 此处将ikAnalyzer整合进lucene
      *
+     * StandardAnalyzer搜索反而比ikAnalyzer更快一些，可能是ikAnalyzer需要做分词处理消耗时间
      * @return
      */
     public static Analyzer getAnalyzer(){
         if(analyzer == null){
-            return new IKAnalyzer(true);
+            analyzer = new StandardAnalyzer();
         }
         return analyzer;
     }
@@ -106,9 +112,7 @@ public class LuceneUtil {
      */
     public static boolean createIndex(List<Document> docs) {
         try {
-            for (Document doc : docs) {
-                getIndexWriter().addDocument(doc);
-            }
+            getIndexWriter().addDocuments(docs);
             // 优化操作
             getIndexWriter().commit();
             getIndexWriter().forceMerge(1); // forceMerge代替optimize
@@ -142,8 +146,7 @@ public class LuceneUtil {
      */
     public static boolean updateIndex(String field, String value, Document doc) {
         try {
-            getIndexWriter().updateDocument(new Term(field, value), doc);
-
+            indexWriter.updateDocument(new Term(field, value), doc);
             log.info("lucene update success.");
             return true;
         } catch (Exception e) {
@@ -169,8 +172,7 @@ public class LuceneUtil {
      */
     public static boolean deleteIndex(String field, String value) {
         try {
-            getIndexWriter().deleteDocuments(new Term(field, value));
-
+            indexWriter.deleteDocuments(new Term(field, value));
             log.info("lucene delete success.");
             return true;
         } catch (Exception e) {
@@ -179,7 +181,7 @@ public class LuceneUtil {
         }finally{
             if(getIndexWriter()!=null){
                 try {
-                    getIndexWriter().close();
+                    indexWriter.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -194,16 +196,16 @@ public class LuceneUtil {
      */
     public static boolean deleteAllIndex() {
         try {
-            getIndexWriter().deleteAll();
+            indexWriter.deleteAll();
             log.info("lucene delete all success.");
             return true;
         } catch (Exception e) {
             log.error("lucene delete all failure.", e);
             return false;
         }finally{
-            if(getIndexWriter()!=null){
+            if(indexWriter != null){
                 try {
-                    getIndexWriter().close();
+                    indexWriter.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -237,8 +239,8 @@ public class LuceneUtil {
      */
     public static int getNumDocs() throws IOException {
         int numIndexed = 0;
-        if (getIndexWriter() != null) {
-            numIndexed = getIndexWriter().numDocs();
+        if (indexWriter != null) {
+            numIndexed = indexWriter.numDocs();
         }
         return numIndexed;
     }

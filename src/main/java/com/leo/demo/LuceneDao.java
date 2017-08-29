@@ -58,13 +58,11 @@ public class LuceneDao {
                 IndexObject object = new IndexObject();
 
                 if(name== null || "".equals(name)){
-                    System.out.println(id);
-                    System.out.println("这个name为空了");
+                    System.out.println(id + "这个name为空了");
                     name = "无名";
                 }
                 if(content== null || "".equals(content)){
-                    System.out.println(id);
-                    System.out.println("这个content为空了");
+                    System.out.println(id + "这个content为空了");
                     content = "无内容";
                 }
 

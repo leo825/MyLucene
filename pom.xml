@@ -121,11 +121,11 @@
             <version>${log4j.version}</version>
         </dependency>
 
-        <!-- 汉字转拼音 -->
+        <!-- jp拼音站汉字 -->
         <dependency>
-            <groupId>com.belerweb</groupId>
-            <artifactId>pinyin4j</artifactId>
-            <version>2.5.0</version>
+            <groupId>com.github.stuxuhai</groupId>
+            <artifactId>jpinyin</artifactId>
+            <version>1.0</version>
         </dependency>
 
     </dependencies>
