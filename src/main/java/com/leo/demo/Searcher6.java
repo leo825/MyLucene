@@ -1,6 +1,7 @@
 package com.leo.demo;
 
 import com.leo.util.LuceneUtil;
+import com.leo.util.PinyinUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -32,11 +33,12 @@ public class Searcher6 {
      *
      * @param feild 索引项
      * @param keywords 关键字
-     * @param topNum 返回的最上的多少条
+     * @param pageIndex 分页的页码
+     * @param pageSize 分页的大小
      * @return
      * @throws Exception
      */
-    public static List<IndexObject> searchIndex(String feild, String keywords, int topNum) throws Exception {
+    public static List<IndexObject> searchIndex(String feild, String keywords, int pageIndex,int pageSize) throws Exception {
         List<IndexObject> indexObjectList = new ArrayList<IndexObject>();
         String[] feilds = {feild};
         if (keywords != null && !"".equals(keywords)) {
@@ -86,12 +88,15 @@ public class Searcher6 {
                 QueryParser qp = new QueryParser(feild, analyzer);
                 qp.setDefaultOperator(QueryParser.AND_OPERATOR);
                 Query query = qp.parse(keywords);
-                TopDocs topDocs = indexSearcher.search(query, topNum);
+                TopDocs topDocs = indexSearcher.search(query, 10000);
                 int count = topDocs.totalHits;// 总记录数
                 System.out.println("总记录数为：" + topDocs.totalHits);// 总记录数
                 ScoreDoc[] hits = topDocs.scoreDocs;// 第二个参数，指定最多返回前n条结果
 
-                for (int i = 0; i < hits.length; i++) {
+                int start = (pageIndex-1)*pageSize <=0 ? 0 : (pageIndex-1)*pageSize;
+                int end = pageIndex*pageSize <= hits.length ? pageIndex*pageSize : hits.length;
+
+                for (int i = start; i < end; i++) {
                     Document doc = indexSearcher.doc(hits[i].doc);
                     IndexObject object = new IndexObject();
                     object.setId(doc.getField("id").stringValue());
@@ -143,7 +148,7 @@ public class Searcher6 {
 
 
     //根据关键字查询对应的记录： 思路是，同关键字去索引查询到对应的记录Id,然而再通过id查询记录
-    public static List<IndexObject> searchBykeyWord(String feild, String keywords, int topNum) throws Exception {
+    public static List<IndexObject> searchBykeyWord(String feild, String keywords, int pageIndex,int pageSize) throws Exception {
         Map map = new HashMap();
 
         long start = new Date().getTime();
@@ -151,7 +156,7 @@ public class Searcher6 {
 
         // 得到初始化索引文件目录
         Directory directory = LuceneUtil.getDirectory();
-        indexObjects = Searcher6.searchIndex(feild, keywords, topNum);
+        indexObjects = Searcher6.searchIndex(feild, keywords, pageIndex,pageSize);
         long end = new Date().getTime();
         System.out.println(" searchBykeyWord 《" + keywords + "》  共花费：" + (end - start) + " milliseconds");
         if (indexObjects != null && indexObjects.size() > 0) {
@@ -186,9 +191,11 @@ public class Searcher6 {
     public static void main(String[] args) throws Exception {
         //initLuceneIndex();
         String feild = "name";
-        String keywords = "伏双";
-        int topNum = 15;
+        String keywords = "";
+        int pageIndex = 0;//第一页
+        int pageSize=10;//每页10个
 
-        searchBykeyWord(feild,keywords,topNum);// 调用searchIndex方法进行查询
+        searchBykeyWord(feild,keywords,pageIndex,pageSize);// 调用searchIndex方法进行查询
+        searchBykeyWord(feild,PinyinUtils.getPingYin(keywords),pageIndex,pageSize);// 调用searchIndex方法进行查询
     }
 }

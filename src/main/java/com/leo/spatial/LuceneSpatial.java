@@ -27,30 +27,29 @@ import java.util.stream.Collectors;
 
 
 /**
-* Created by LX on 2017/8/26.
-*/
-public class
-        LuceneSpatial {
+ * Created by LX on 2017/8/26.
+ */
+public class LuceneSpatial {
 
     /**
      * Spatial4j上下文
      * 1: SpatialContext初始化可由SpatialContextFactory配置
      * 2: SpatialContext属性
-     *          DistanceCalculator(默认使用GeodesicSphereDistCalc.Haversine,将地球视为标准球体)
-     *          ShapeFactory(默认使用ShapeFactoryImpl)
-     *          Rectangle(构建经纬度空间:RectangleImpl(-180, 180, -90, 90, this))
-     *          BinaryCodec()
-     * */
+     * DistanceCalculator(默认使用GeodesicSphereDistCalc.Haversine,将地球视为标准球体)
+     * ShapeFactory(默认使用ShapeFactoryImpl)
+     * Rectangle(构建经纬度空间:RectangleImpl(-180, 180, -90, 90, this))
+     * BinaryCodec()
+     */
     private SpatialContext ctx;
 
     /**
      * 索引和查询模型的策略接口
-     * */
+     */
     private SpatialStrategy strategy;
 
     /**
      * 索引存储目录
-     * */
+     */
     private Directory directory;
 
     protected void init() {
@@ -112,6 +111,7 @@ public class
 
     /**
      * 地理位置搜索
+     *
      * @throws Exception
      */
     public void search() throws Exception {
@@ -138,7 +138,7 @@ public class
         /**
          * 定义坐标点(x,y)即(经度,纬度)即当前用户所在地点(烟台)
          * */
-        Point pt = ctx.getShapeFactory().pointXY(121.39,37.52);
+        Point pt = ctx.getShapeFactory().pointXY(121.39, 37.52);
 
         /**
          * 计算当前用户所在坐标点与索引坐标点中心之间的距离即当前用户地点与每个待匹配地点之间的距离,DEG_TO_KM表示以KM为单位
@@ -163,7 +163,7 @@ public class
             int cityId = document.getField("id").numericValue().intValue();
             String city = document.getField("city").stringValue();
             String location = document.getField(strategy.getFieldName()).stringValue();
-            String []locations = location.split(",");
+            String[] locations = location.split(",");
             double xPoint = Double.parseDouble(locations[0]);
             double yPoint = Double.parseDouble(locations[1]);
             double distDEG = ctx.calcDistance(point, xPoint, yPoint);
