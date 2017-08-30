@@ -115,6 +115,13 @@
             <version>${spatial4j.version}</version>
         </dependency>
 
+        <!-- 复杂多边形需要用到jst工具来处理 -->
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <version>1.8</version>
+        </dependency>
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>

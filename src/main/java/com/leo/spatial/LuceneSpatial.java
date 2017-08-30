@@ -11,6 +11,7 @@ import org.apache.lucene.queries.function.ValueSource;
 import org.apache.lucene.search.*;
 import org.apache.lucene.spatial.SpatialStrategy;
 import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy;
+import org.apache.lucene.spatial.prefix.tree.Cell;
 import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree;
 import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree;
 import org.apache.lucene.spatial.query.SpatialArgs;
@@ -19,9 +20,18 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.distance.DistanceUtils;
+import org.locationtech.spatial4j.io.GeohashUtils;
 import org.locationtech.spatial4j.shape.Point;
+import org.locationtech.spatial4j.shape.Rectangle;
 import org.locationtech.spatial4j.shape.Shape;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,6 +62,9 @@ public class LuceneSpatial {
      */
     private Directory directory;
 
+
+    int maxLevels = 11;
+
     protected void init() {
         /**
          * SpatialContext也可以通过SpatialContextFactory工厂类来构建
@@ -63,7 +76,7 @@ public class LuceneSpatial {
          * 1: SpatialPrefixTree定义的Geo Hash最大精度为24
          * 2: GeohashUtils定义类经纬度到Geo Hash值公用方法
          * */
-        SpatialPrefixTree spatialPrefixTree = new GeohashPrefixTree(ctx, 11);
+        SpatialPrefixTree spatialPrefixTree = new GeohashPrefixTree(ctx, maxLevels);
 
         /**
          * 索引和搜索的策略接口,两个主要实现类
@@ -172,10 +185,80 @@ public class LuceneSpatial {
         }
     }
 
+
+    /**
+     * 功能：Java读取txt文件的内容
+     * 步骤：1：先获得文件句柄
+     * 2：获得文件句柄当做是输入一个字节码流，需要对这个输入流进行读取
+     * 3：读取到输入流后，需要读取生成字节流
+     * 4：一行一行的输出。readline()。
+     * 备注：需要考虑的是异常情况
+     * @param filePath
+     */
+    public static List<CityGeoInfo> readTxtFile(String filePath,String encoding){
+        List<CityGeoInfo> list = new ArrayList<CityGeoInfo>();
+        try {
+            encoding = encoding == null || "".equals(encoding) ? "UTF-8":encoding;
+            File file=new File(filePath);
+            if(file.isFile() && file.exists()){ //判断文件是否存在
+                InputStreamReader read = new InputStreamReader(new FileInputStream(file),encoding);//考虑到编码格式
+                BufferedReader bufferedReader = new BufferedReader(read);
+                String lineTxt = null;
+                int i = 0;
+                while((lineTxt = bufferedReader.readLine()) != null){
+                    i++;
+                    String[] arr = lineTxt.replaceAll(" ","").split(":");
+                    String[] xy = arr[1].split(",");
+                    CityGeoInfo cityGeoInfo = new CityGeoInfo();
+                    cityGeoInfo.setCityId(i);
+                    cityGeoInfo.setName(arr[0]);
+                    cityGeoInfo.setLnt(Double.parseDouble(xy[0]));
+                    cityGeoInfo.setLat(Double.parseDouble(xy[1]));
+                    list.add(cityGeoInfo);
+                }
+                read.close();
+
+            }else{
+                System.out.println("找不到指定的文件");
+            }
+        } catch (Exception e) {
+            System.out.println("读取文件内容出错");
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+    public static double calcDistanceFromErrPct(Shape shape, double distErrPct, SpatialContext ctx) {
+        if (distErrPct < 0 || distErrPct > 0.5) {
+            throw new IllegalArgumentException("distErrPct " + distErrPct + " must be between [0 to 0.5]");
+        }
+        if (distErrPct == 0 || shape instanceof Point) {
+            return 0;
+        }
+        Rectangle bbox = shape.getBoundingBox();
+        //Compute the distance from the center to a corner.  Because the distance
+        // to a bottom corner vs a top corner can vary in a geospatial scenario,
+        // take the closest one (greater precision).
+        Point ctr = bbox.getCenter();
+        double y = (ctr.getY() >= 0 ? bbox.getMaxY() : bbox.getMinY());
+        double diagonalDist = ctx.getDistCalc().distance(ctr, bbox.getMaxX(), y);
+        return diagonalDist * distErrPct;
+    }
+
+    public int getLevelForDistance(double dist) {
+        if (dist == 0)
+            return maxLevels;//short circuit
+        final int level = GeohashUtils.lookupHashLenForWidthHeight(dist, dist);
+        return Math.max(Math.min(level, maxLevels), 1);
+    }
+
+
     public static void main(String[] args) throws Exception {
+
         LuceneSpatial luceneSpatial = new LuceneSpatial();
         luceneSpatial.init();
-        //luceneSpatial.createIndex(GeoHelper.getCityGeoInfo("/Users/hanhan.zhang/Downloads/geo.txt"));
+        luceneSpatial.createIndex(readTxtFile("D:\\Library\\lucence\\text\\geo.txt",null));
         luceneSpatial.search();
     }
 
