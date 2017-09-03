@@ -11,7 +11,6 @@ import org.apache.lucene.queries.function.ValueSource;
 import org.apache.lucene.search.*;
 import org.apache.lucene.spatial.SpatialStrategy;
 import org.apache.lucene.spatial.prefix.RecursivePrefixTreeStrategy;
-import org.apache.lucene.spatial.prefix.tree.Cell;
 import org.apache.lucene.spatial.prefix.tree.GeohashPrefixTree;
 import org.apache.lucene.spatial.prefix.tree.SpatialPrefixTree;
 import org.apache.lucene.spatial.query.SpatialArgs;
@@ -29,9 +28,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -255,10 +253,10 @@ public class LuceneSpatial {
 
 
     public static void main(String[] args) throws Exception {
-
+        String textPath = System.getProperty("user.dir") + File.separator+"src"+File.separator +"main"+File.separator + "resources"+File.separator + "geo.txt";
         LuceneSpatial luceneSpatial = new LuceneSpatial();
         luceneSpatial.init();
-        luceneSpatial.createIndex(readTxtFile("D:\\Library\\lucence\\text\\geo.txt",null));
+        luceneSpatial.createIndex(readTxtFile(textPath,null));
         luceneSpatial.search();
     }
 
