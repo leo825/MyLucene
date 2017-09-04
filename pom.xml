@@ -128,12 +128,20 @@
             <version>${log4j.version}</version>
         </dependency>
 
-        <!-- jp拼音站汉字 -->
+        <!-- jp拼音转汉字 -->
         <dependency>
             <groupId>com.github.stuxuhai</groupId>
             <artifactId>jpinyin</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!-- solr的客户端，这里的服务端是solr6.1-->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+
 
     </dependencies>
     <build>

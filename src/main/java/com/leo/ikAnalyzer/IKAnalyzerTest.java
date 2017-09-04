@@ -1,4 +1,4 @@
-package com.leo.test;
+package com.leo.ikAnalyzer;
 
 import java.io.StringReader;
 
