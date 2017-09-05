@@ -6,9 +6,8 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.SortedMap;
+import java.util.List;
 
 /**
  * Created by LX on 2017/9/4.
@@ -48,7 +47,23 @@ import java.util.SortedMap;
 
 public class SolrTest {
 
-    public static void main(String[] agrs){
+    public static void main(String[] agrs) throws IOException, SolrServerException {
+        //saveUserIndex();
+        QueryResponse respone = SolrUtil.query("伏双利");
+        SolrDocumentList docs = respone.getResults();
+        System.out.println(docs);
+    }
+
+    public static void saveUserIndex(){
+        SolrDao dao = new SolrDao();
+        List<Article> articles = dao.initSolrIndex();
+        long start = new Date().getTime();
+        SolrUtil.saveSolrResources(articles);
+        long end = new Date().getTime();
+        System.out.println("创建索引共耗时: "+(end-start)+"ms ");
+    }
+
+    public static void test(){
         Article article = new Article();
         article.setId(UUIDGenerator.getUUID());
         article.setName("solr测试1");

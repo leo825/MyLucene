@@ -4,8 +4,6 @@ package com.leo.util;
  * Created by LX on 2017/9/4.
  */
 
-import java.io.IOException;
-
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -13,6 +11,11 @@ import org.apache.solr.client.solrj.beans.DocumentObjectBinder;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrInputDocument;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * solr工具类
@@ -45,6 +48,28 @@ public class SolrUtil {
     }
 
     /**
+     * 批量保存或者更新solr数据
+     *
+     * @param solrEntitys
+     */
+    public static <T> boolean saveSolrResources(List<T> solrEntitys) {
+        DocumentObjectBinder binder = new DocumentObjectBinder();
+        ArrayList<SolrInputDocument> docs = new ArrayList<SolrInputDocument>();
+        for(T solrEntity : solrEntitys){
+            SolrInputDocument doc = binder.toSolrInputDocument(solrEntity);
+            docs.add(doc);
+        }
+        try {
+            client.add(docs);
+            client.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 删除solr 数据
      *
      * @param id
@@ -59,6 +84,23 @@ public class SolrUtil {
         }
         return true;
     }
+
+    /**
+     * 删除solr 数据
+     *
+     * @param ids
+     */
+    public static boolean removeSolrDatas(List<String> ids) {
+        try {
+            client.deleteById(ids);
+            client.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     /**
      * 查询
      *
