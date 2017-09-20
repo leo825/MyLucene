@@ -36,10 +36,11 @@ public class test {
             try {
                 while((lineTxt = bufferedReader.readLine()) != null){
                     String newStr  = lineTxt.replaceAll("to_date\\(","").replaceAll(",'yyyymmddHH24miss'\\)","");
-                    Pattern pattern = Pattern.compile("(?<=values\\()[^\\)]+");
+                    Pattern pattern = Pattern.compile("(?<=values\\().*(?=\\);)");
                     Matcher matcher = pattern.matcher(newStr);
                     while(matcher.find()){
                         String[] arr = matcher.group(0).split(",");
+                        System.out.println(matcher.toString());
                         String s = "";
                         for(int i = 0; i < arr.length; i++){
                             String temp = arr[i].replaceAll("'","");

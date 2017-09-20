@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class SolrUtil {
     private static SolrClient client;
-    private static String url = "http://localhost:8983/solr/articles";
+    private static String url = "http://localhost:8983/solr/nmqys";
     static {
         client = new HttpSolrClient.Builder(url).build();
     }

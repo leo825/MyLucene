@@ -1,7 +1,5 @@
 package com.leo.solr;
 
-import com.leo.demo.IndexObject;
-
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -57,16 +55,6 @@ public class SolrDao {
                 String name = rs.getString("xm");
                 String content = rs.getString("ssjgid");
                 Article object = new Article();
-
-                if(name== null || "".equals(name)){
-                    System.out.println(id + "这个name为空了");
-                    name = "无名";
-                }
-                if(content== null || "".equals(content)){
-                    System.out.println(id + "这个content为空了");
-                    content = "无内容";
-                }
-
                 object.setId(id);
                 object.setName(name);
                 object.setContent(content);
