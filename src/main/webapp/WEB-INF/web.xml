@@ -4,4 +4,12 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+    <servlet>
+        <servlet-name>CreateCoreServlet</servlet-name>
+        <servlet-class>com.leo.core.CreateCoreServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreateCoreServlet</servlet-name>
+        <url-pattern>/createCore</url-pattern>
+    </servlet-mapping>
 </web-app>
